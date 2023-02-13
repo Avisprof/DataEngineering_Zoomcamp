@@ -20,7 +20,9 @@ def clean(df = pd.DataFrame) -> pd.DataFrame:
             df[col] = pd.to_datetime(df[col])
     print(df.head(2))
     print(f"columns: \n {df.dtypes}")
-    print(f"rows: {len(df)}")
+    print(f'rows before drop nan: {len(df)}')
+    df.dropna(subset=['PUlocationID','DOlocationID'], inplace=True)
+    print(f"rows after drop nan: {len(df)}")
 
     return df
 
