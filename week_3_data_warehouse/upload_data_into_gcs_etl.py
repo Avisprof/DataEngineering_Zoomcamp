@@ -13,6 +13,18 @@ def get_df_by_url(url:str) -> pd.DataFrame:
     return df
 
 @task(log_prints=True)
+def clean(df = pd.DataFrame) -> pd.DataFrame:
+    """Fix dtype issues"""
+    for col in df.columns:
+        if col.endswith('datetime'):
+            df[col] = pd.to_datetime(df[col])
+    print(df.head(2))
+    print(f"columns: \n {df.dtypes}")
+    print(f"rows: {len(df)}")
+
+    return df
+
+@task(log_prints=True)
 def write_local_to_parquet(df: pd.DataFrame, path: Path) -> None:
     """Write DataFrame locally as parquet file"""
     print(f'save DataFrame to: {path.resolve()}')
@@ -40,7 +52,8 @@ def web_to_gcs(year, month):
     remote_path = Path(f'fhv_parquet/{file_name}.parquet')
 
     df = get_df_by_url(dataset_url)
-    write_local_to_parquet(df, local_path)
+    df_clean = clean(df)
+    write_local_to_parquet(df_clean, local_path)
     upload_data_to_gcs(local_path, remote_path)
 
 if __name__ == '__main__':
