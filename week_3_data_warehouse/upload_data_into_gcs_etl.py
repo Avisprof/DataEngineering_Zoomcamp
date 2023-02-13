@@ -21,8 +21,11 @@ def clean(df = pd.DataFrame) -> pd.DataFrame:
     print(df.head(2))
     print(f"columns: \n {df.dtypes}")
     print(f'rows before drop nan: {len(df)}')
+
     df.dropna(subset=['PUlocationID','DOlocationID'], inplace=True)
     print(f"rows after drop nan: {len(df)}")
+    
+    df[['PUlocationID', 'DOlocationID']] = df[['PUlocationID', 'DOlocationID']].astype('int')
 
     return df
 
