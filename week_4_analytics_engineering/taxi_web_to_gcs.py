@@ -73,8 +73,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--year')
     parser.add_argument('--color')
+    parser.add_argument('--month', nargs='?', const=-1)
 
     args = parser.parse_args()
     print(args)
 
-    etl_parent_flow(args.year, args.color)
+    etl_parent_flow(args.year, args.color, args.month)
