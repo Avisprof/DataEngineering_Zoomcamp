@@ -59,8 +59,12 @@ def etl_web_to_gcs(year: int, month: int, color: str) -> None:
 
 @flow()
 def etl_parent_flow(year: int = 2021,
-                    color: str = "yellow"):
-    for month in range(1,13):
+                    color: str = "yellow",
+                    month: int = -1):
+    if month == -1:
+        for m in range(1,13):
+            etl_web_to_gcs(year, m, color)
+    else:
         etl_web_to_gcs(year, month, color)
 
 
