@@ -16,9 +16,23 @@ def fetch(dataset_url: str) -> pd.DataFrame:
 @task(log_prints=True)
 def clean(df = pd.DataFrame) -> pd.DataFrame:
     """Fix dtype issues"""
+    
     for col in df.columns:
         if col.endswith('datetime'):
             df[col] = pd.to_datetime(df[col])
+
+    columns_int = ['VendorID', 
+                   'passenger_count', 
+                   'RatecodeID', 
+                   'PULocationID', 
+                   'DOLocationID', 
+                   'payment_type',
+                   'trip_type']
+    
+    for col in columns_int:
+        if col in df.columns:
+            df[col] = df[col].astype('Int64')
+
     print(df.head(2))
     print(f"columns: \n {df.dtypes}")
     print(f"rows: {len(df)}")
@@ -43,7 +57,7 @@ def write_gcs(local_path: Path, remote_path: Path) -> None:
 @flow(log_prints=True)
 def etl_web_to_gcs(year: int, month: int, color: str) -> None:
     """The main ETL function"""
-    dataset_file = f"{color}_tripdata_{year}-{month:02}"
+    dataset_file = f"{color}_tripdata_{year}-{int(month):02}"
 
     remote_path = Path(f"data/{color}/{dataset_file}.parquet")
     local_path = f"{dataset_file}.parquet"
@@ -60,8 +74,8 @@ def etl_web_to_gcs(year: int, month: int, color: str) -> None:
 @flow()
 def etl_parent_flow(year: int = 2021,
                     color: str = "yellow",
-                    month: int = -1):
-    if month == -1:
+                    month = None):
+    if month is None:
         for m in range(1,13):
             etl_web_to_gcs(year, m, color)
     else:
