@@ -5,10 +5,10 @@ INPUT_DATA_PATH_FHV = '../../resources/fhv_tripdata_2019-01.csv'
 
 BOOTSTRAP_SERVERS = 'localhost:9092'
 
-TOPIC_WINDOWED_PICKUP_ID_COUNT = 'pickup_location_id_counts_windowed'
-
 PRODUCE_TOPIC_GREEN = CONSUME_TOPIC_GREEN = 'green_tripdata'
 PRODUCE_TOPIC_FHV = CONSUME_TOPIC_FHV = 'fhv_tripdata'
+PRODUCE_TOPIC_RIDE_ALL = CONSUME_TOPIC_RIDE_ALL = 'ride_all_count'
+
 
 GREEN_SCHEMA = T.StructType([
      T.StructField('lpep_pickup_datetime', T.TimestampType()),
@@ -26,6 +26,12 @@ FHV_SCHEMA = T.StructType([
      T.StructField('dropOff_datetime', T.TimestampType()),
      T.StructField('PUlocationID', T.IntegerType()),
      T.StructField('DOlocationID', T.IntegerType())
+])
+
+RIDE_ALL_SCHEMA = T.StructType([
+     T.StructField('pickup_id', T.IntegerType()),
+     T.StructField('count', T.IntegerType()),
+     T.StructField('source', T.StringType())
 ])
 
 
